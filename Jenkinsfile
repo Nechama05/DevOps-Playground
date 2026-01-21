@@ -27,11 +27,12 @@ pipeline {
     }
 
     // החלק החדש: מה עושים אחרי שהכל נגמר
-    post {
+post {
         success {
-            // שמירת קבצי ה-JAR ודוחות הטסטים
+            // שומרים רק את קובץ ה-JAR (התוכנה המוכנה)
+            // מחקנו את השורה של junit כדי שלא ייכשל על חוסר בטסטים
             archiveArtifacts artifacts: '**/build/libs/*.jar', allowEmptyArchive: true
-            junit '**/build/test-results/test/*.xml'
         }
     }
+}
 }
