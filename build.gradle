@@ -1,0 +1,13 @@
+// build.gradle (הראשי)
+plugins {
+    id 'java' // נותן יכולות Java לכולם
+}
+
+allprojects {
+    group = 'com.example'
+    version = '1.0.0'
+
+    repositories {
+        mavenCentral() // שכולם יורידו ספריות משם
+    }
+}

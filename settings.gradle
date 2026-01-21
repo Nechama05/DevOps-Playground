@@ -1,0 +1,4 @@
+rootProject.name = 'DevOps-Playground'
+
+include 'core'
+include 'app'
