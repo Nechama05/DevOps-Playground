@@ -4,14 +4,9 @@ pipeline {
     stages {
         stage('Init') {
             steps {
-                echo 'Downloading Gradle manually (ignoring SSL)...'
-                // 1. הורדה אגרסיבית עם curl (הדגל -k אומר להתעלם מ-SSL)
+                echo 'Downloading Gradle manually...'
                 sh 'curl -L -k -o gradle.zip https://services.gradle.org/distributions/gradle-9.3.0-bin.zip'
-
-                // 2. חילוץ הקובץ (שימוש ב-jar כי unzip לא תמיד קיים)
                 sh 'jar xf gradle.zip'
-
-                // 3. מתן הרשאות ריצה
                 sh 'chmod +x gradle-9.3.0/bin/gradle'
             }
         }
@@ -19,7 +14,6 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building...'
-                // שימי לב: אנחנו מריצים את הגריידל שהורדנו הרגע, לא את ה-wrapper
                 sh './gradle-9.3.0/bin/gradle clean build'
             }
         }
@@ -30,12 +24,14 @@ pipeline {
                 sh './gradle-9.3.0/bin/gradle test'
             }
         }
+    }
 
-        stage('Run') {
-            steps {
-                echo 'Running App...'
-                sh './gradle-9.3.0/bin/gradle run'
-            }
+    // החלק החדש: מה עושים אחרי שהכל נגמר
+    post {
+        success {
+            // שמירת קבצי ה-JAR ודוחות הטסטים
+            archiveArtifacts artifacts: '**/build/libs/*.jar', allowEmptyArchive: true
+            junit '**/build/test-results/test/*.xml'
         }
     }
 }
